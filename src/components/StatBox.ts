@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * StatBox Component
@@ -240,5 +239,3 @@ export class StatBox {
             .replace(/'/g, '&#039;');
     }
 }
-// Register component
-registry.register('StatBox', StatBox);

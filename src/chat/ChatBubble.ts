@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * ChatBubble Component
@@ -509,5 +508,3 @@ export class ChatBubble {
             }
         `;
     }}
-// Register component
-registry.register('ChatBubble', ChatBubble);

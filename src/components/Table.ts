@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * Table Component
@@ -448,5 +447,3 @@ export class Table {
             }
         `;
     }}
-// Register component
-registry.register('Table', Table);

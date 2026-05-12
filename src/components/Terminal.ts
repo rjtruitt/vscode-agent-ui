@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * Terminal Component
@@ -420,5 +419,3 @@ export class Terminal {
             .replace(/'/g, '&#039;');
     }
 }
-// Register component
-registry.register('Terminal', Terminal);

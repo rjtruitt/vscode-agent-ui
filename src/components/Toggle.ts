@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * Toggle Component
@@ -327,5 +326,3 @@ export class Toggle {
             }
         `;
     }}
-// Register component
-registry.register('Toggle', Toggle);

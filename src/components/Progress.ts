@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * Progress Component
@@ -569,5 +568,3 @@ export class Progress {
             }
         `;
     }}
-// Register component
-registry.register('Progress', Progress);

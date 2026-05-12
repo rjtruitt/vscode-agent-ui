@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * Canvas Component
@@ -392,5 +391,3 @@ export class Canvas {
             .replace(/'/g, '&#039;');
     }
 }
-// Register component
-registry.register('Canvas', Canvas);

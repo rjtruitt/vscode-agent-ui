@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * ToolCard Component
@@ -373,5 +372,3 @@ export class ToolCard {
             .replace(/'/g, '&#039;');
     }
 }
-// Register component
-registry.register('ToolCard', ToolCard);

@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * DiffViewer Component
@@ -384,5 +383,3 @@ export class DiffViewer {
             .replace(/'/g, '&#039;');
     }
 }
-// Register component
-registry.register('DiffViewer', DiffViewer);

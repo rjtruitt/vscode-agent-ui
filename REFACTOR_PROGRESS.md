@@ -59,7 +59,11 @@ Transform this into a professional library suitable for enterprise consumption.
 - [ ] **Add prop validators** - Consider adding runtime validation utilities for development mode
 
 ### Low Priority
-- [ ] **Tree-shake audit** - Ensure zero side effects on import
+- [x] **Tree-shake audit** - Ensure zero side effects on import
+  - ✓ Removed all auto-registration side effects from components
+  - ✓ Created explicit register-all.ts for getAllStyles()
+  - ✓ Components are now pure - no side effects on import
+  - ✓ Tree-shaking works: import only what you use
 - [ ] **Performance benchmarks** - Document component render times
 - [ ] **Documentation review** - Ensure all public APIs have complete JSDoc
 
@@ -78,3 +82,11 @@ Transform this into a professional library suitable for enterprise consumption.
   - ✓ Added get(), has(), getNames(), count() methods
   - ✓ Integrated with logging system for debugging
   - ✓ Comprehensive JSDoc with AI examples
+- 2026-05-12: **COMPLETED** Tree-shaking support (MAJOR)
+  - ✓ Removed all auto-registration side effects from 19 component files
+  - ✓ Components are now pure - zero side effects on import
+  - ✓ Created src/base/register-all.ts for explicit registration
+  - ✓ Updated getAllStyles() to lazily load registration
+  - ✓ getStyles([components]) is tree-shakeable
+  - ✓ Bundle size can be drastically reduced by importing only needed components
+  - ✓ Comprehensive documentation on tree-shaking in main index

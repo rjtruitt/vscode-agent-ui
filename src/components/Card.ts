@@ -88,7 +88,6 @@
  */
 
 import { escapeHtml } from '../utils/html';
-import { registry } from '../base/Registry';
 
 export type CardVariant = 'default' | 'info' | 'success' | 'warning' | 'error';
 
@@ -404,5 +403,3 @@ export class Card {
     }
 }
 
-// Register component
-registry.register('Card', Card);

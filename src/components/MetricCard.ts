@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * MetricCard Component
@@ -215,5 +214,3 @@ export class MetricCard {
             .replace(/'/g, '&#039;');
     }
 }
-// Register component
-registry.register('MetricCard', MetricCard);

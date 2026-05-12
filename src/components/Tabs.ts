@@ -1,4 +1,3 @@
-import { registry } from '../base/Registry';
 import { escapeHtml } from '../utils/html';
 /**
  * Tabs Component
@@ -388,5 +387,3 @@ export class Tabs {
             }
         `;
     }}
-// Register component
-registry.register('Tabs', Tabs);

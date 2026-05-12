@@ -67,7 +67,6 @@
  */
 
 import { escapeHtml } from '../utils/html';
-import { registry } from '../base/Registry';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 export type ButtonSize = 'small' | 'medium' | 'large';
@@ -330,5 +329,3 @@ export class Button {
     }
 }
 
-// Register component
-registry.register('Button', Button);
