@@ -150,6 +150,24 @@
 import * as vscode from 'vscode';
 import { escapeHtml } from '../utils/html';
 import { getNonce } from '../utils/security';
+
+/**
+ * Message passed between webview and extension
+ */
+export interface PanelMessage {
+    /** Command identifier */
+    command: string;
+    /** Optional data payload */
+    data?: Record<string, unknown>;
+    /** Additional message properties */
+    [key: string]: unknown;
+}
+
+/**
+ * Message handler function type
+ */
+export type MessageHandler = (message: PanelMessage) => void | Promise<void>;
+
 export interface PanelOptions {
     /** Extension URI for loading resources */
     extensionUri: vscode.Uri;
@@ -188,7 +206,7 @@ export interface PanelOptions {
 export class Panel {
     private panel: vscode.WebviewPanel;
     private disposables: vscode.Disposable[] = [];
-    private messageHandlers: Map<string, (message: any) => void | Promise<void>> = new Map();
+    private messageHandlers: Map<string, MessageHandler> = new Map();
     private statePreservationEnabled: boolean = true;
 
     /**
@@ -509,18 +527,18 @@ export class Panel {
     /**
      * Post a message to the webview
      */
-    postMessage(message: any): Thenable<boolean> {
+    postMessage(message: PanelMessage): Thenable<boolean> {
         return this.panel.webview.postMessage(message);
     }
 
     /**
      * Register a message handler
      */
-    onDidReceiveMessage(command: string, handler: (message: any) => void | Promise<void>): void;
-    onDidReceiveMessage(handler: (message: any) => void | Promise<void>): void;
+    onDidReceiveMessage(command: string, handler: MessageHandler): void;
+    onDidReceiveMessage(handler: MessageHandler): void;
     onDidReceiveMessage(
-        commandOrHandler: string | ((message: any) => void | Promise<void>),
-        handler?: (message: any) => void | Promise<void>
+        commandOrHandler: string | MessageHandler,
+        handler?: MessageHandler
     ): void {
         if (typeof commandOrHandler === 'string') {
             if (handler) {

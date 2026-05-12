@@ -134,8 +134,8 @@ export interface ChatBubbleProps {
     /** Author name */
     author?: string;
 
-    /** Additional metadata */
-    metadata?: Record<string, any>;
+    /** Additional metadata (string, number, or boolean values) */
+    metadata?: Record<string, string | number | boolean>;
 
     /** Show timestamp */
     showTimestamp?: boolean;

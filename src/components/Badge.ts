@@ -247,6 +247,8 @@ export class Badge {
                 }
             }
         `;
-    }}
+    }
+}
+
 // Register component
 registry.register('Badge', Badge);

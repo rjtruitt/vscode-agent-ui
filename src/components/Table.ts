@@ -115,9 +115,19 @@ import { escapeHtml } from '../utils/html';
 export type ColumnAlign = 'left' | 'center' | 'right';
 
 /**
+ * Primitive value type
+ */
+type Primitive = string | number | boolean | null | undefined;
+
+/**
+ * Row data type - object with string keys and primitive or nested object values
+ */
+export type TableRowData = Record<string, Primitive | Record<string, Primitive>>;
+
+/**
  * Table column definition
  */
-export interface TableColumn {
+export interface TableColumn<T extends TableRowData = TableRowData> {
     /** Column key (matches data object key) */
     key: string;
 
@@ -134,18 +144,18 @@ export interface TableColumn {
     sortable?: boolean;
 
     /** Custom cell renderer */
-    render?: (value: any, row: any) => string;
+    render?: (value: T[keyof T], row: T) => string;
 }
 
 /**
  * Table component properties
  */
-export interface TableProps {
+export interface TableProps<T extends TableRowData = TableRowData> {
     /** Column definitions */
-    columns: TableColumn[];
+    columns: TableColumn<T>[];
 
     /** Table data */
-    data: any[];
+    data: T[];
 
     /** Striped rows */
     striped?: boolean;

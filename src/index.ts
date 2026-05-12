@@ -11,6 +11,9 @@ export * from './components';
 export * from './chat';
 export * from './layout';
 
+// Export utilities
+export * from './utils';
+
 // Export registry for advanced usage
 export { registry } from './base/Registry';
 

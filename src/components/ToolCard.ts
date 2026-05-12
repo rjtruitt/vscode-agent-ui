@@ -45,6 +45,11 @@ import { escapeHtml } from '../utils/html';
 
 export type ToolStatus = 'pending' | 'running' | 'success' | 'error';
 
+/**
+ * JSON-serializable data type for tool request/response
+ */
+export type ToolData = string | number | boolean | null | ToolData[] | { [key: string]: ToolData };
+
 export interface ToolCardProps {
     /** Tool name */
     toolName: string;
@@ -56,10 +61,10 @@ export interface ToolCardProps {
     status: ToolStatus;
 
     /** Request parameters */
-    request?: any;
+    request?: ToolData;
 
     /** Response data */
-    response?: any;
+    response?: ToolData;
 
     /** Error message (if status='error') */
     error?: string;
@@ -196,7 +201,7 @@ export class ToolCard {
         `;
     }
 
-    private static formatData(data: any): string {
+    private static formatData(data: ToolData): string {
         if (typeof data === 'string') {
             return escapeHtml(data);
         }
