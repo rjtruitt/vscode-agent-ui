@@ -52,10 +52,11 @@ Transform this into a professional library suitable for enterprise consumption.
   - Fixed closing braces formatting
 
 ### Medium Priority
-- [ ] **Add input validation** - Consider zod for props validation
-- [ ] **Modularize Button component** - Complete Button/ directory refactor
+- [ ] **Add input validation** - DECISION: Skip zod (bloat). TypeScript provides compile-time validation.
+- [x] **Modularize Button component** - DECISION: Single-file components are optimal for this library. Removed incomplete Button/ directory.
 - [ ] **Add bundle size tracking** - webpack-bundle-analyzer or similar
 - [ ] **Create test suite** - 80%+ coverage goal
+- [ ] **Add prop validators** - Consider adding runtime validation utilities for development mode
 
 ### Low Priority
 - [ ] **Tree-shake audit** - Ensure zero side effects on import
