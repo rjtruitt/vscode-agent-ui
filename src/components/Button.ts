@@ -67,6 +67,7 @@
  */
 
 import { escapeHtml } from '../utils/html';
+import { ValidationError } from '../utils/errors';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 export type ButtonSize = 'small' | 'medium' | 'large';
@@ -122,8 +123,26 @@ export interface ButtonProps {
 export class Button {
     /**
      * Render a button to HTML string
+     *
+     * @throws {ValidationError} If props are invalid
      */
     static render(props: ButtonProps): string {
+        // Validate that button has text or icon (or ariaLabel for accessibility)
+        if (!props.text && !props.icon && !props.loading && !props.ariaLabel) {
+            throw new ValidationError('Button must have text, icon, or ariaLabel for accessibility', {
+                field: 'text|icon|ariaLabel',
+                received: { text: props.text, icon: props.icon, ariaLabel: props.ariaLabel },
+            });
+        }
+
+        // If icon-only button (no text), require ariaLabel for accessibility
+        if (!props.text && props.icon && !props.ariaLabel && !props.loading) {
+            throw new ValidationError('Icon-only buttons must include ariaLabel for accessibility', {
+                field: 'ariaLabel',
+                hint: 'Add ariaLabel to describe the button action for screen readers',
+            });
+        }
+
         const {
             text,
             icon,
@@ -139,6 +158,36 @@ export class Button {
             data = {},
             fullWidth = false
         } = props;
+
+        // Validate variant
+        const validVariants: ButtonVariant[] = ['primary', 'secondary', 'danger', 'ghost'];
+        if (!validVariants.includes(variant)) {
+            throw new ValidationError('Invalid button variant', {
+                field: 'variant',
+                expected: validVariants.join(' | '),
+                received: variant,
+            });
+        }
+
+        // Validate size
+        const validSizes: ButtonSize[] = ['small', 'medium', 'large'];
+        if (!validSizes.includes(size)) {
+            throw new ValidationError('Invalid button size', {
+                field: 'size',
+                expected: validSizes.join(' | '),
+                received: size,
+            });
+        }
+
+        // Validate type
+        const validTypes: ButtonType[] = ['button', 'submit', 'reset'];
+        if (!validTypes.includes(type)) {
+            throw new ValidationError('Invalid button type', {
+                field: 'type',
+                expected: validTypes.join(' | '),
+                received: type,
+            });
+        }
 
         // Build classes
         const classes = [
