@@ -1,4 +1,6 @@
 import { escapeHtml } from '../utils/html';
+import { ValidationError } from '../utils/errors';
+
 /**
  * Badge Component
  *
@@ -112,8 +114,18 @@ export interface BadgeProps {
 export class Badge {
     /**
      * Render a badge to HTML string
+     *
+     * @throws {ValidationError} If props are invalid
      */
     static render(props: BadgeProps): string {
+        // Validate required props
+        if (!props.text || typeof props.text !== 'string' || props.text.trim() === '') {
+            throw new ValidationError('Badge text is required and must be a non-empty string', {
+                field: 'text',
+                received: props.text,
+            });
+        }
+
         const {
             text,
             icon,
@@ -123,6 +135,26 @@ export class Badge {
             pill = false,
             className = ''
         } = props;
+
+        // Validate variant
+        const validVariants: BadgeVariant[] = ['default', 'primary', 'success', 'warning', 'error', 'info'];
+        if (!validVariants.includes(variant)) {
+            throw new ValidationError('Invalid badge variant', {
+                field: 'variant',
+                expected: validVariants.join(' | '),
+                received: variant,
+            });
+        }
+
+        // Validate size
+        const validSizes: BadgeSize[] = ['small', 'medium', 'large'];
+        if (!validSizes.includes(size)) {
+            throw new ValidationError('Invalid badge size', {
+                field: 'size',
+                expected: validSizes.join(' | '),
+                received: size,
+            });
+        }
 
         // Build classes
         const classes = [
