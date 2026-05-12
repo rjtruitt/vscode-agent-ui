@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Tabs Component
  *
@@ -183,16 +185,16 @@ export class Tabs {
             return `
                 <button
                     class="${tabClasses}"
-                    data-tab="${this.escapeHtml(tab.id)}"
+                    data-tab="${escapeHtml(tab.id)}"
                     role="tab"
                     aria-selected="${isDefault}"
-                    aria-controls="panel-${this.escapeHtml(id)}-${this.escapeHtml(tab.id)}"
+                    aria-controls="panel-${escapeHtml(id)}-${escapeHtml(tab.id)}"
                     ${tab.disabled ? 'disabled' : ''}
-                    onclick="__switchTab('${this.escapeHtml(id)}', '${this.escapeHtml(tab.id)}')"
+                    onclick="__switchTab('${escapeHtml(id)}', '${escapeHtml(tab.id)}')"
                 >
                     ${tab.icon ? `<span class="tab-icon">${tab.icon}</span>` : ''}
-                    <span class="tab-label">${this.escapeHtml(tab.label)}</span>
-                    ${tab.badge ? `<span class="tab-badge">${this.escapeHtml(tab.badge)}</span>` : ''}
+                    <span class="tab-label">${escapeHtml(tab.label)}</span>
+                    ${tab.badge ? `<span class="tab-badge">${escapeHtml(tab.badge)}</span>` : ''}
                 </button>
             `;
         }).join('');
@@ -203,10 +205,10 @@ export class Tabs {
             return `
                 <div
                     class="tab-panel"
-                    id="panel-${this.escapeHtml(id)}-${this.escapeHtml(tab.id)}"
-                    data-tab-panel="${this.escapeHtml(tab.id)}"
+                    id="panel-${escapeHtml(id)}-${escapeHtml(tab.id)}"
+                    data-tab-panel="${escapeHtml(tab.id)}"
                     role="tabpanel"
-                    aria-labelledby="tab-${this.escapeHtml(id)}-${this.escapeHtml(tab.id)}"
+                    aria-labelledby="tab-${escapeHtml(id)}-${escapeHtml(tab.id)}"
                     style="display: ${isDefault ? 'block' : 'none'}"
                 >
                     ${tab.content}
@@ -215,8 +217,8 @@ export class Tabs {
         }).join('');
 
         return `
-            <div class="${classes}" ${styleStr ? `style="${styleStr}"` : ''} data-tab-group="${this.escapeHtml(id)}">
-                <div class="tabs-header" role="tablist" aria-label="${this.escapeHtml(id)} tabs">
+            <div class="${classes}" ${styleStr ? `style="${styleStr}"` : ''} data-tab-group="${escapeHtml(id)}">
+                <div class="tabs-header" role="tablist" aria-label="${escapeHtml(id)} tabs">
                     ${tabButtons}
                 </div>
                 <div class="tabs-content">
@@ -385,17 +387,6 @@ export class Tabs {
                 justify-content: center;
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Tabs', Tabs);

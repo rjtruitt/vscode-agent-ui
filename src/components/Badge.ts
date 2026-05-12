@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Badge Component
  *
@@ -137,7 +139,7 @@ export class Badge {
             <span class="${classes}">
                 ${dot ? '<span class="badge-dot"></span>' : ''}
                 ${icon ? `<span class="badge-icon">${icon}</span>` : ''}
-                <span class="badge-text">${Badge.escapeHtml(text)}</span>
+                <span class="badge-text">${escapeHtml(text)}</span>
             </span>
         `;
     }
@@ -245,17 +247,6 @@ export class Badge {
                 }
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Badge', Badge);

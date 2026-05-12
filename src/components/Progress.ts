@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Progress Component
  *
@@ -197,11 +199,11 @@ export class Progress {
             <div class="${wrapperClasses}">
                 ${label || showPercentage ? `
                     <div class="progress-header">
-                        ${label ? `<span class="progress-label">${Progress.escapeHtml(label)}</span>` : ''}
+                        ${label ? `<span class="progress-label">${escapeHtml(label)}</span>` : ''}
                         ${showPercentage ? `<span class="progress-percentage">${percentage}%</span>` : ''}
                     </div>
                 ` : ''}
-                <div class="progress-track" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" ${label ? `aria-label="${Progress.escapeHtml(label)}"` : ''}>
+                <div class="progress-track" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" ${label ? `aria-label="${escapeHtml(label)}"` : ''}>
                     <div class="progress-fill" style="width: ${percentage}%"></div>
                 </div>
             </div>
@@ -227,8 +229,8 @@ export class Progress {
 
         return `
             <div class="${wrapperClasses}">
-                <div class="spinner" role="status" ${label ? `aria-label="${Progress.escapeHtml(label)}"` : ''}></div>
-                ${label ? `<span class="progress-label">${Progress.escapeHtml(label)}</span>` : ''}
+                <div class="spinner" role="status" ${label ? `aria-label="${escapeHtml(label)}"` : ''}></div>
+                ${label ? `<span class="progress-label">${escapeHtml(label)}</span>` : ''}
             </div>
         `;
     }
@@ -265,9 +267,9 @@ export class Progress {
                         ${index < steps.length - 1 ? '<div class="step-line"></div>' : ''}
                     </div>
                     <div class="step-content">
-                        <div class="step-label">${Progress.escapeHtml(step.label)}</div>
+                        <div class="step-label">${escapeHtml(step.label)}</div>
                         ${step.description ? `
-                            <div class="step-description">${Progress.escapeHtml(step.description)}</div>
+                            <div class="step-description">${escapeHtml(step.description)}</div>
                         ` : ''}
                     </div>
                 </div>
@@ -320,7 +322,7 @@ export class Progress {
                         <text class="circular-text" x="50%" y="50%" text-anchor="middle" dy="0.3em">${percentage}%</text>
                     ` : ''}
                 </svg>
-                ${label ? `<div class="progress-label">${Progress.escapeHtml(label)}</div>` : ''}
+                ${label ? `<div class="progress-label">${escapeHtml(label)}</div>` : ''}
             </div>
         `;
     }
@@ -566,17 +568,6 @@ export class Progress {
                 stroke: var(--vscode-errorForeground);
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Progress', Progress);

@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Toggle Component
  *
@@ -142,7 +144,7 @@ export class Toggle {
 
         // Build attributes
         const attrs = [
-            name && `name="${Toggle.escapeHtml(name)}"`,
+            name && `name="${escapeHtml(name)}"`,
             `id="${id}"`,
             disabled && 'disabled',
             checked && 'checked',
@@ -160,12 +162,12 @@ export class Toggle {
                         <span class="toggle-slider"></span>
                     </label>
                     <label for="${id}" class="toggle-label">
-                        ${Toggle.escapeHtml(label)}
+                        ${escapeHtml(label)}
                     </label>
                 </div>
                 ${description ? `
                     <div id="${id}-desc" class="toggle-description">
-                        ${Toggle.escapeHtml(description)}
+                        ${escapeHtml(description)}
                     </div>
                 ` : ''}
             </div>
@@ -324,17 +326,6 @@ export class Toggle {
                 margin-left: 58px;
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Toggle', Toggle);

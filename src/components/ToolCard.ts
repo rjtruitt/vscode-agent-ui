@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * ToolCard Component
  *
@@ -127,8 +129,8 @@ export class ToolCard {
                         <span class="status-icon ${status === 'running' ? 'spinning' : ''}">${statusIcon}</span>
                     </div>
                     <div class="tool-info">
-                        <div class="tool-name">${this.escapeHtml(toolName)}</div>
-                        ${description ? `<div class="tool-description">${this.escapeHtml(description)}</div>` : ''}
+                        <div class="tool-name">${escapeHtml(toolName)}</div>
+                        ${description ? `<div class="tool-description">${escapeHtml(description)}</div>` : ''}
                     </div>
                     <div class="tool-meta">
                         ${duration !== undefined ? `<span class="tool-duration">${duration}ms</span>` : ''}
@@ -163,7 +165,7 @@ export class ToolCard {
                 ${error ? `
                 <div class="tool-error">
                     <div class="error-icon">⚠</div>
-                    <div class="error-message">${this.escapeHtml(error)}</div>
+                    <div class="error-message">${escapeHtml(error)}</div>
                 </div>
                 ` : ''}
             </div>
@@ -196,12 +198,12 @@ export class ToolCard {
 
     private static formatData(data: any): string {
         if (typeof data === 'string') {
-            return this.escapeHtml(data);
+            return escapeHtml(data);
         }
         try {
-            return this.escapeHtml(JSON.stringify(data, null, 2));
+            return escapeHtml(JSON.stringify(data, null, 2));
         } catch {
-            return this.escapeHtml(String(data));
+            return escapeHtml(String(data));
         }
     }
 
@@ -366,3 +368,5 @@ export class ToolCard {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('ToolCard', ToolCard);

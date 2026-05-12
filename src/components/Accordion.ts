@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Accordion Component
  *
@@ -117,17 +119,17 @@ export class Accordion {
         } = section;
 
         return `
-            <div class="accordion-section ${disabled ? 'disabled' : ''}" data-accordion="${this.escapeHtml(id)}">
+            <div class="accordion-section ${disabled ? 'disabled' : ''}" data-accordion="${escapeHtml(id)}">
                 <div
                     class="accordion-header ${defaultOpen ? 'expanded' : ''}"
-                    onclick="${disabled ? '' : `__toggleAccordion('${this.escapeHtml(id)}', ${multiple})`}"
+                    onclick="${disabled ? '' : `__toggleAccordion('${escapeHtml(id)}', ${multiple})`}"
                     ${disabled ? '' : 'role="button" tabindex="0"'}
                     aria-expanded="${defaultOpen}"
                 >
                     <span class="expand-icon">▶</span>
                     ${icon ? `<span class="section-icon">${icon}</span>` : ''}
-                    <span class="section-title">${this.escapeHtml(title)}</span>
-                    ${badge ? `<span class="section-badge">${this.escapeHtml(badge)}</span>` : ''}
+                    <span class="section-title">${escapeHtml(title)}</span>
+                    ${badge ? `<span class="section-badge">${escapeHtml(badge)}</span>` : ''}
                 </div>
                 <div class="accordion-content" style="display: ${defaultOpen ? 'block' : 'none'}">
                     ${content}
@@ -271,3 +273,5 @@ export class Accordion {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('Accordion', Accordion);

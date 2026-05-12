@@ -87,6 +87,9 @@
  * Cards are lightweight. You can render dozens without performance issues.
  */
 
+import { escapeHtml } from '../utils/html';
+import { registry } from '../base/Registry';
+
 export type CardVariant = 'default' | 'info' | 'success' | 'warning' | 'error';
 
 export interface CardAction {
@@ -193,7 +196,7 @@ export class Card {
 
         // Build data attributes
         const dataAttrs = Object.entries(data)
-            .map(([key, value]) => `data-${key}="${Card.escapeHtml(value)}"`)
+            .map(([key, value]) => `data-${key}="${escapeHtml(value)}"`)
             .join(' ');
 
         // Build attributes
@@ -210,7 +213,7 @@ export class Card {
                 ${title || icon ? `
                     <div class="card-header">
                         ${icon ? `<span class="card-icon">${icon}</span>` : ''}
-                        ${title ? `<h3 class="card-title">${Card.escapeHtml(title)}</h3>` : ''}
+                        ${title ? `<h3 class="card-title">${escapeHtml(title)}</h3>` : ''}
                     </div>
                 ` : ''}
                 <div class="card-content">
@@ -225,8 +228,8 @@ export class Card {
                                     <button
                                         class="card-action ${action.variant ? `variant-${action.variant}` : ''}"
                                         onclick="${action.onclick}(event)"
-                                        title="${Card.escapeHtml(action.label)}"
-                                        aria-label="${Card.escapeHtml(action.label)}">
+                                        title="${escapeHtml(action.label)}"
+                                        aria-label="${escapeHtml(action.label)}">
                                         ${action.icon}
                                     </button>
                                 `).join('')}
@@ -399,16 +402,7 @@ export class Card {
             }
         `;
     }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
 }
+
+// Register component
+registry.register('Card', Card);

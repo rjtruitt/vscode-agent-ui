@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * MetricCard Component
  *
@@ -119,7 +121,7 @@ export class MetricCard {
                     ${typeof value === 'number' ? value.toLocaleString() : value}
                     ${trendIcon ? `<span class="trend-indicator">${trendIcon}</span>` : ''}
                 </div>
-                <div class="metric-label">${this.escapeHtml(label)}</div>
+                <div class="metric-label">${escapeHtml(label)}</div>
             </div>
         `;
     }
@@ -213,3 +215,5 @@ export class MetricCard {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('MetricCard', MetricCard);

@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Table Component
  *
@@ -218,7 +220,7 @@ export class Table {
                                 ${col.width ? `style="width: ${col.width}"` : ''}
                                 ${col.sortable ? `onclick="handleSort('${col.key}')"` : ''}
                             >
-                                ${Table.escapeHtml(col.label)}
+                                ${escapeHtml(col.label)}
                                 ${col.sortable ? '<span class="sort-indicator"></span>' : ''}
                             </th>
                         `;
@@ -246,7 +248,7 @@ export class Table {
                                 const value = row[col.key];
                                 const cellContent = col.render
                                     ? col.render(value, row)
-                                    : Table.escapeHtml(String(value ?? ''));
+                                    : escapeHtml(String(value ?? ''));
 
                                 const cellClasses = [
                                     'table-cell',
@@ -263,7 +265,7 @@ export class Table {
             <tbody>
                 <tr>
                     <td colspan="${columns.length}" class="table-empty">
-                        ${Table.escapeHtml(emptyMessage)}
+                        ${escapeHtml(emptyMessage)}
                     </td>
                 </tr>
             </tbody>
@@ -271,7 +273,7 @@ export class Table {
 
         return `
             <table class="${tableClasses}">
-                ${caption ? `<caption>${Table.escapeHtml(caption)}</caption>` : ''}
+                ${caption ? `<caption>${escapeHtml(caption)}</caption>` : ''}
                 ${headerHtml}
                 ${bodyHtml}
             </table>
@@ -435,17 +437,6 @@ export class Table {
                 });
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Table', Table);

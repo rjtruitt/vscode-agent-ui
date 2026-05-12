@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * StatBox Component
  *
@@ -105,8 +107,8 @@ export class StatBox {
             <div class="${classes}" ${styleStr ? `style="${styleStr}"` : ''} ${onclick ? `onclick="${onclick}()"` : ''}>
                 ${icon ? `<div class="statbox-icon">${icon}</div>` : ''}
                 <div class="statbox-value">${prefix}${displayValue}${suffix}</div>
-                ${label ? `<div class="statbox-label">${this.escapeHtml(label)}</div>` : ''}
-                ${subtitle ? `<div class="statbox-subtitle">${this.escapeHtml(subtitle)}</div>` : ''}
+                ${label ? `<div class="statbox-label">${escapeHtml(label)}</div>` : ''}
+                ${subtitle ? `<div class="statbox-subtitle">${escapeHtml(subtitle)}</div>` : ''}
             </div>
         `;
     }
@@ -238,3 +240,5 @@ export class StatBox {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('StatBox', StatBox);

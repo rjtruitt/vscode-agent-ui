@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Terminal Component
  *
@@ -144,20 +146,20 @@ export class Terminal {
         const outputHtml = initialOutput.map(line => this.renderLine(line, showTimestamps)).join('');
 
         return `
-            <div class="${classes}" id="${this.escapeHtml(id)}" ${styleStr ? `style="${styleStr}"` : ''}>
-                <div class="terminal-output" data-scroll-id="${this.escapeHtml(id)}-output">
+            <div class="${classes}" id="${escapeHtml(id)}" ${styleStr ? `style="${styleStr}"` : ''}>
+                <div class="terminal-output" data-scroll-id="${escapeHtml(id)}-output">
                     ${outputHtml}
                 </div>
                 ${!readonly ? `
                 <div class="terminal-input-line">
-                    <span class="terminal-prompt">${this.escapeHtml(prompt)}</span>
+                    <span class="terminal-prompt">${escapeHtml(prompt)}</span>
                     <input
                         type="text"
                         class="terminal-input"
-                        id="${this.escapeHtml(id)}-input"
+                        id="${escapeHtml(id)}-input"
                         autocomplete="off"
                         spellcheck="false"
-                        ${onCommand ? `onkeydown="__handleTerminalInput(event, '${this.escapeHtml(id)}', '${onCommand}')"` : ''}
+                        ${onCommand ? `onkeydown="__handleTerminalInput(event, '${escapeHtml(id)}', '${onCommand}')"` : ''}
                     />
                 </div>
                 ` : ''}
@@ -166,8 +168,8 @@ export class Terminal {
                 if (!window.__terminalHistory) {
                     window.__terminalHistory = {};
                 }
-                if (!window.__terminalHistory['${this.escapeHtml(id)}']) {
-                    window.__terminalHistory['${this.escapeHtml(id)}'] = {
+                if (!window.__terminalHistory['${escapeHtml(id)}']) {
+                    window.__terminalHistory['${escapeHtml(id)}'] = {
                         history: [],
                         historyIndex: -1
                     };
@@ -240,7 +242,7 @@ export class Terminal {
                         if (type === 'command') {
                             const prompt = document.createElement('span');
                             prompt.className = 'terminal-prompt';
-                            prompt.textContent = '${this.escapeHtml(prompt)}';
+                            prompt.textContent = '${escapeHtml(prompt)}';
                             line.appendChild(prompt);
                         }
 
@@ -290,7 +292,7 @@ export class Terminal {
             <div class="terminal-line type-${line.type}">
                 ${timestamp}
                 ${prompt}
-                <span class="terminal-content">${this.escapeHtml(line.text)}</span>
+                <span class="terminal-content">${escapeHtml(line.text)}</span>
             </div>
         `;
     }
@@ -418,3 +420,5 @@ export class Terminal {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('Terminal', Terminal);

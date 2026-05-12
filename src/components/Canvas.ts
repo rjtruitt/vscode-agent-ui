@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Canvas Component
  *
@@ -139,18 +141,18 @@ export class Canvas {
 
         const actionsDropdown = actions.length > 0 ? `
             <div class="canvas-actions">
-                <button class="actions-button" onclick="__toggleCanvasActions('${this.escapeHtml(id)}')">
+                <button class="actions-button" onclick="__toggleCanvasActions('${escapeHtml(id)}')">
                     ⋮
                 </button>
-                <div class="actions-dropdown" id="${this.escapeHtml(id)}-actions" style="display: none;">
+                <div class="actions-dropdown" id="${escapeHtml(id)}-actions" style="display: none;">
                     ${actions.map(action => `
                         <button
                             class="action-item"
-                            onclick="${action.onclick}('${this.escapeHtml(id)}'); __toggleCanvasActions('${this.escapeHtml(id)}')"
+                            onclick="${action.onclick}('${escapeHtml(id)}'); __toggleCanvasActions('${escapeHtml(id)}')"
                             ${action.disabled ? 'disabled' : ''}
                         >
                             ${action.icon ? `<span class="action-icon">${action.icon}</span>` : ''}
-                            <span class="action-label">${this.escapeHtml(action.label)}</span>
+                            <span class="action-label">${escapeHtml(action.label)}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -158,12 +160,12 @@ export class Canvas {
         ` : '';
 
         return `
-            <div class="${classes}" id="${this.escapeHtml(id)}" ${styleStr ? `style="${styleStr}"` : ''} data-accordion="${this.escapeHtml(id)}-canvas">
-                <div class="canvas-header ${collapsible ? 'clickable' : ''}" ${collapsible ? `onclick="__toggleCanvas('${this.escapeHtml(id)}')"` : ''}>
+            <div class="${classes}" id="${escapeHtml(id)}" ${styleStr ? `style="${styleStr}"` : ''} data-accordion="${escapeHtml(id)}-canvas">
+                <div class="canvas-header ${collapsible ? 'clickable' : ''}" ${collapsible ? `onclick="__toggleCanvas('${escapeHtml(id)}')"` : ''}>
                     <div class="canvas-title-group">
                         ${collapsible ? '<span class="collapse-icon">▼</span>' : ''}
                         ${icon ? `<span class="canvas-icon">${icon}</span>` : ''}
-                        <h3 class="canvas-title">${this.escapeHtml(title)}</h3>
+                        <h3 class="canvas-title">${escapeHtml(title)}</h3>
                         <span class="canvas-status ${status === 'generating' ? 'spinning' : ''}">${statusIcon}</span>
                     </div>
                     <div class="canvas-toolbar">
@@ -390,3 +392,5 @@ export class Canvas {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('Canvas', Canvas);

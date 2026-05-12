@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Select Component
  *
@@ -187,7 +189,7 @@ export class Select {
 
         // Build select attributes
         const attrs = [
-            name && `name="${Select.escapeHtml(name)}"`,
+            name && `name="${escapeHtml(name)}"`,
             `id="${id}"`,
             disabled && 'disabled',
             required && 'required',
@@ -210,25 +212,25 @@ export class Select {
             <div class="${wrapperClasses}">
                 ${label ? `
                     <label for="${id}" class="select-label">
-                        ${Select.escapeHtml(label)}
+                        ${escapeHtml(label)}
                         ${required ? '<span class="required-mark">*</span>' : ''}
                     </label>
                 ` : ''}
                 <div class="select-container">
                     <select class="vscode-select" ${attrs}>
-                        ${placeholder ? `<option value="" disabled ${!value ? 'selected' : ''}>${Select.escapeHtml(placeholder)}</option>` : ''}
+                        ${placeholder ? `<option value="" disabled ${!value ? 'selected' : ''}>${escapeHtml(placeholder)}</option>` : ''}
                         ${optionsHtml}
                     </select>
                     <span class="select-arrow">▼</span>
                 </div>
                 ${description && !error ? `
                     <div id="${id}-desc" class="select-description">
-                        ${Select.escapeHtml(description)}
+                        ${escapeHtml(description)}
                     </div>
                 ` : ''}
                 ${error ? `
                     <div id="${id}-desc" class="select-error" role="alert">
-                        ${Select.escapeHtml(error)}
+                        ${escapeHtml(error)}
                     </div>
                 ` : ''}
             </div>
@@ -243,7 +245,7 @@ export class Select {
         const disabled = option.disabled ? 'disabled' : '';
         const label = option.icon ? `${option.icon} ${option.label}` : option.label;
 
-        return `<option value="${Select.escapeHtml(option.value)}" ${selected} ${disabled}>${Select.escapeHtml(label)}</option>`;
+        return `<option value="${escapeHtml(option.value)}" ${selected} ${disabled}>${escapeHtml(label)}</option>`;
     }
 
     /**
@@ -252,7 +254,7 @@ export class Select {
     private static renderOptGroup(group: SelectOptionGroup, selectedValue?: string): string {
         const optionsHtml = group.items.map(opt => Select.renderOption(opt, selectedValue)).join('');
         return `
-            <optgroup label="${Select.escapeHtml(group.group)}">
+            <optgroup label="${escapeHtml(group.group)}">
                 ${optionsHtml}
             </optgroup>
         `;
@@ -361,17 +363,6 @@ export class Select {
                 padding: 4px 8px;
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Select', Select);

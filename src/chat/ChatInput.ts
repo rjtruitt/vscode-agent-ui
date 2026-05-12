@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * ChatInput Component
  *
@@ -158,7 +160,7 @@ export class ChatInput {
 
         const textareaAttrs = [
             `id="${id}"`,
-            `placeholder="${ChatInput.escapeHtml(placeholder)}"`,
+            `placeholder="${escapeHtml(placeholder)}"`,
             `rows="1"`,
             maxLength && `maxlength="${maxLength}"`,
             disabled && 'disabled',
@@ -171,7 +173,7 @@ export class ChatInput {
                 ${loading ? `
                     <div class="chat-input-loading">
                         <span class="loading-spinner"></span>
-                        <span class="loading-text">${ChatInput.escapeHtml(loadingText)}</span>
+                        <span class="loading-text">${escapeHtml(loadingText)}</span>
                     </div>
                 ` : ''}
                 <div class="chat-input-container">
@@ -397,17 +399,6 @@ export class ChatInput {
                 }
             });
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('ChatInput', ChatInput);

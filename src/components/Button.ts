@@ -66,6 +66,9 @@
  * - Focus states are built-in
  */
 
+import { escapeHtml } from '../utils/html';
+import { registry } from '../base/Registry';
+
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 export type ButtonSize = 'small' | 'medium' | 'large';
 export type ButtonType = 'button' | 'submit' | 'reset';
@@ -151,7 +154,7 @@ export class Button {
 
         // Build data attributes
         const dataAttrs = Object.entries(data)
-            .map(([key, value]) => `data-${key}="${Button.escapeHtml(value)}"`)
+            .map(([key, value]) => `data-${key}="${escapeHtml(value)}"`)
             .join(' ');
 
         // Build attributes
@@ -159,8 +162,8 @@ export class Button {
             `type="${type}"`,
             disabled && 'disabled',
             onclick && `onclick="${onclick}(event)"`,
-            tooltip && `title="${Button.escapeHtml(tooltip)}"`,
-            ariaLabel && `aria-label="${Button.escapeHtml(ariaLabel)}"`,
+            tooltip && `title="${escapeHtml(tooltip)}"`,
+            ariaLabel && `aria-label="${escapeHtml(ariaLabel)}"`,
             dataAttrs
         ].filter(Boolean).join(' ');
 
@@ -173,7 +176,7 @@ export class Button {
                 content += `<span class="button-icon">${icon}</span>`;
             }
             if (text) {
-                content += `<span class="button-text">${Button.escapeHtml(text)}</span>`;
+                content += `<span class="button-text">${escapeHtml(text)}</span>`;
             }
         }
 
@@ -325,16 +328,7 @@ export class Button {
             }
         `;
     }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
 }
+
+// Register component
+registry.register('Button', Button);

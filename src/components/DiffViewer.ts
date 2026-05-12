@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * DiffViewer Component
  *
@@ -129,8 +131,8 @@ export class DiffViewer {
 
         const header = filename ? `
             <div class="diff-header">
-                <span class="diff-filename">${this.escapeHtml(filename)}</span>
-                ${language ? `<span class="diff-language">${this.escapeHtml(language)}</span>` : ''}
+                <span class="diff-filename">${escapeHtml(filename)}</span>
+                ${language ? `<span class="diff-language">${escapeHtml(language)}</span>` : ''}
             </div>
         ` : '';
 
@@ -159,7 +161,7 @@ export class DiffViewer {
                         <div class="${lineClass}">
                             ${showLineNumbers ? `<span class="line-num">${lineNum}</span>` : ''}
                             <span class="line-indicator">${indicator}</span>
-                            <span class="line-content">${this.escapeHtml(line.content)}</span>
+                            <span class="line-content">${escapeHtml(line.content)}</span>
                         </div>
                     `;
                 }).join('')}
@@ -179,7 +181,7 @@ export class DiffViewer {
                         return `
                             <div class="${lineClass}">
                                 ${showLineNumbers ? `<span class="line-num">${lineNum}</span>` : ''}
-                                <span class="line-content">${this.escapeHtml(line.content)}</span>
+                                <span class="line-content">${escapeHtml(line.content)}</span>
                             </div>
                         `;
                     }).join('')}
@@ -193,7 +195,7 @@ export class DiffViewer {
                         return `
                             <div class="${lineClass}">
                                 ${showLineNumbers ? `<span class="line-num">${lineNum}</span>` : ''}
-                                <span class="line-content">${this.escapeHtml(line.content)}</span>
+                                <span class="line-content">${escapeHtml(line.content)}</span>
                             </div>
                         `;
                     }).join('')}
@@ -382,3 +384,5 @@ export class DiffViewer {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('DiffViewer', DiffViewer);

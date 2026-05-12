@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Box Component
  *
@@ -51,7 +53,7 @@ export class Box {
             .join('; ');
 
         const attrStr = Object.entries(attributes)
-            .map(([k, v]) => `${k}="${this.escapeHtml(v)}"`)
+            .map(([k, v]) => `${k}="${escapeHtml(v)}"`)
             .join(' ');
 
         const handlers = [
@@ -76,3 +78,5 @@ export class Box {
             .replace(/'/g, '&#039;');
     }
 }
+// Register component
+registry.register('Box', Box);

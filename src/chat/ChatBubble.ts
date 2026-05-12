@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * ChatBubble Component
  *
@@ -188,7 +190,7 @@ export class ChatBubble {
                 <div class="bubble-avatar">${displayAvatar}</div>
                 <div class="bubble-body">
                     <div class="bubble-header">
-                        <span class="bubble-author">${ChatBubble.escapeHtml(displayAuthor)}</span>
+                        <span class="bubble-author">${escapeHtml(displayAuthor)}</span>
                         ${showTimestamp ? `<span class="bubble-time">${timeStr}</span>` : ''}
                     </div>
                     <div class="bubble-content">
@@ -197,7 +199,7 @@ export class ChatBubble {
                     ${metadata && Object.keys(metadata).length > 0 ? `
                         <div class="bubble-metadata">
                             ${Object.entries(metadata).map(([key, value]) =>
-                                `<span class="metadata-item">${ChatBubble.escapeHtml(key)}: ${ChatBubble.escapeHtml(String(value))}</span>`
+                                `<span class="metadata-item">${escapeHtml(key)}: ${escapeHtml(String(value))}</span>`
                             ).join('')}
                         </div>
                     ` : ''}
@@ -207,8 +209,8 @@ export class ChatBubble {
                                 <button
                                     class="bubble-action ${action.variant ? `variant-${action.variant}` : ''}"
                                     onclick="${action.onclick}(event)"
-                                    title="${ChatBubble.escapeHtml(action.label)}"
-                                    aria-label="${ChatBubble.escapeHtml(action.label)}">
+                                    title="${escapeHtml(action.label)}"
+                                    aria-label="${escapeHtml(action.label)}">
                                     ${action.icon}
                                 </button>
                             `).join('')}
@@ -251,7 +253,7 @@ export class ChatBubble {
      * Render markdown to HTML (basic implementation)
      */
     private static renderMarkdown(text: string): string {
-        let html = ChatBubble.escapeHtml(text);
+        let html = escapeHtml(text);
 
         // Code blocks (```language\ncode\n```)
         html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
@@ -506,17 +508,6 @@ export class ChatBubble {
                 background: rgba(255, 0, 0, 0.15);
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('ChatBubble', ChatBubble);

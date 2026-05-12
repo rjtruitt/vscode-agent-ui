@@ -1,3 +1,5 @@
+import { registry } from '../base/Registry';
+import { escapeHtml } from '../utils/html';
 /**
  * Input Component
  *
@@ -218,9 +220,9 @@ export class Input {
 
         // Build input attributes
         const attrs = [
-            name && `name="${Input.escapeHtml(name)}"`,
+            name && `name="${escapeHtml(name)}"`,
             `id="${id}"`,
-            placeholder && `placeholder="${Input.escapeHtml(placeholder)}"`,
+            placeholder && `placeholder="${escapeHtml(placeholder)}"`,
             disabled && 'disabled',
             required && 'required',
             readonly && 'readonly',
@@ -238,14 +240,14 @@ export class Input {
 
         // Render input element
         const inputElement = type === 'textarea'
-            ? `<textarea class="${inputClasses}" rows="${rows}" ${attrs}>${Input.escapeHtml(value)}</textarea>`
-            : `<input type="${type}" class="${inputClasses}" value="${Input.escapeHtml(value)}" ${attrs}>`;
+            ? `<textarea class="${inputClasses}" rows="${rows}" ${attrs}>${escapeHtml(value)}</textarea>`
+            : `<input type="${type}" class="${inputClasses}" value="${escapeHtml(value)}" ${attrs}>`;
 
         return `
             <div class="${wrapperClasses}">
                 ${label ? `
                     <label for="${id}" class="input-label">
-                        ${Input.escapeHtml(label)}
+                        ${escapeHtml(label)}
                         ${required ? '<span class="required-mark">*</span>' : ''}
                     </label>
                 ` : ''}
@@ -255,12 +257,12 @@ export class Input {
                 </div>
                 ${description && !error ? `
                     <div id="${id}-desc" class="input-description">
-                        ${Input.escapeHtml(description)}
+                        ${escapeHtml(description)}
                     </div>
                 ` : ''}
                 ${error ? `
                     <div id="${id}-desc" class="input-error" role="alert">
-                        ${Input.escapeHtml(error)}
+                        ${escapeHtml(error)}
                     </div>
                 ` : ''}
             </div>
@@ -379,17 +381,6 @@ export class Input {
                 opacity: 1;
             }
         `;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-}
+    }}
+// Register component
+registry.register('Input', Input);

@@ -148,10 +148,8 @@
  */
 
 import * as vscode from 'vscode';
-
-/**
- * Panel configuration options
- */
+import { escapeHtml } from '../utils/html';
+import { getNonce } from '../utils/security';
 export interface PanelOptions {
     /** Extension URI for loading resources */
     extensionUri: vscode.Uri;
@@ -278,7 +276,7 @@ export class Panel {
             styles = '',
             body,
             scripts = '',
-            nonce = this.getNonce()
+            nonce = getNonce()
         } = options;
 
         return `<!DOCTYPE html>
@@ -287,7 +285,7 @@ export class Panel {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${this.panel.webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}'; img-src ${this.panel.webview.cspSource} https: data:;">
-            <title>${this.escapeHtml(title)}</title>
+            <title>${escapeHtml(title)}</title>
             <style>
                 body {
                     font-family: var(--vscode-font-family);
@@ -614,30 +612,6 @@ export class Panel {
         this.disposables.forEach(d => d.dispose());
         this.disposables = [];
         this.messageHandlers.clear();
-    }
-
-    /**
-     * Generate a nonce for CSP
-     */
-    private getNonce(): string {
-        let text = '';
-        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 32; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return text;
-    }
-
-    /**
-     * Escape HTML entities
-     */
-    private escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
     }
 
     /**
