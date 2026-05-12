@@ -76,12 +76,18 @@ export interface UIComponent<P extends BaseProps = BaseProps> {
  *
  * Used by the registry to store components without needing
  * to know their specific prop types at compile time.
+ *
+ * Uses structural typing to accept any class with render and getStyles static methods,
+ * regardless of the specific prop types they accept.
+ *
+ * Note: Uses `unknown` for flexibility while maintaining type safety - the registry
+ * performs runtime validation of component structure.
  */
-export interface StaticUIComponent {
+export type StaticUIComponent = {
     /** Constructor signature (components are never instantiated) */
-    new(): Record<string, never>;
-    /** Render method accepting any valid props */
-    render(props: BaseProps): string;
+    new(...args: unknown[]): unknown;
+    /** Render method that returns HTML string */
+    render(props: unknown): string;
     /** Get component styles */
     getStyles(): string;
 }

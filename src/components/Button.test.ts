@@ -209,13 +209,11 @@ describe('Button component', () => {
     describe('validation', () => {
         it('should throw ValidationError if no text, icon, or ariaLabel', () => {
             expect(() => {
-                // @ts-expect-error - testing runtime validation
-                Button.render({});
+                Button.render({} as ButtonProps);
             }).toThrow(ValidationError);
 
             try {
-                // @ts-expect-error - testing runtime validation
-                Button.render({});
+                Button.render({} as ButtonProps);
             } catch (error) {
                 expect(error).toBeInstanceOf(ValidationError);
                 if (error instanceof ValidationError) {

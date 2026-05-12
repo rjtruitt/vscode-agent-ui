@@ -7,8 +7,8 @@ import { registry } from './Registry';
 import { StaticUIComponent } from './Component';
 import { RegistryError } from '../utils/errors';
 
-// Mock component for testing
-class MockComponent implements StaticUIComponent {
+// Mock components for testing (don't need to implement interface - runtime validation handles it)
+class MockComponent {
     static render(): string {
         return '<div>Mock</div>';
     }
@@ -18,7 +18,7 @@ class MockComponent implements StaticUIComponent {
     }
 }
 
-class AnotherMockComponent implements StaticUIComponent {
+class AnotherMockComponent {
     static render(): string {
         return '<span>Another</span>';
     }
@@ -35,7 +35,7 @@ describe('ComponentRegistry', () => {
     describe('register', () => {
         it('should register a component', () => {
             const componentName = `TestComponent_${Date.now()}`;
-            registry.register(componentName, MockComponent);
+            registry.register(componentName, MockComponent as unknown as StaticUIComponent);
 
             expect(registry.has(componentName)).toBe(true);
             expect(registry.get(componentName)).toBe(MockComponent);
@@ -43,8 +43,7 @@ describe('ComponentRegistry', () => {
 
         it('should throw RegistryError if name is invalid', () => {
             expect(() => {
-                // @ts-expect-error - testing runtime validation
-                registry.register('', MockComponent);
+                registry.register('', MockComponent as unknown as StaticUIComponent);
             }).toThrow(RegistryError);
 
             expect(() => {
@@ -93,7 +92,7 @@ describe('ComponentRegistry', () => {
         it('should allow re-registering a component', () => {
             const name = `ReregisterTest_${Date.now()}`;
 
-            registry.register(name, MockComponent);
+            registry.register(name, MockComponent as unknown as StaticUIComponent);
             expect(registry.get(name)).toBe(MockComponent);
 
             // Re-register with different component
@@ -117,7 +116,7 @@ describe('ComponentRegistry', () => {
     describe('get', () => {
         it('should return registered component', () => {
             const name = `GetTest_${Date.now()}`;
-            registry.register(name, MockComponent);
+            registry.register(name, MockComponent as unknown as StaticUIComponent);
 
             const component = registry.get(name);
             expect(component).toBe(MockComponent);
@@ -132,7 +131,7 @@ describe('ComponentRegistry', () => {
     describe('has', () => {
         it('should return true for registered component', () => {
             const name = `HasTest_${Date.now()}`;
-            registry.register(name, MockComponent);
+            registry.register(name, MockComponent as unknown as StaticUIComponent);
 
             expect(registry.has(name)).toBe(true);
         });
@@ -148,7 +147,7 @@ describe('ComponentRegistry', () => {
             const name2 = `Names2_${Date.now()}`;
 
             registry.register(name1, MockComponent);
-            registry.register(name2, AnotherMockComponent);
+            registry.register(name2, AnotherMockComponent as unknown as StaticUIComponent);
 
             const names = registry.getNames();
 
@@ -172,7 +171,7 @@ describe('ComponentRegistry', () => {
             const name2 = `All2_${Date.now()}`;
 
             registry.register(name1, MockComponent);
-            registry.register(name2, AnotherMockComponent);
+            registry.register(name2, AnotherMockComponent as unknown as StaticUIComponent);
 
             const components = registry.getAll();
 
@@ -196,7 +195,7 @@ describe('ComponentRegistry', () => {
             const name2 = `Styles2_${Date.now()}`;
 
             registry.register(name1, MockComponent);
-            registry.register(name2, AnotherMockComponent);
+            registry.register(name2, AnotherMockComponent as unknown as StaticUIComponent);
 
             const styles = registry.getAllStyles();
 
@@ -209,7 +208,7 @@ describe('ComponentRegistry', () => {
             const name2 = `StylesInclude2_${Date.now()}`;
 
             registry.register(name1, MockComponent);
-            registry.register(name2, AnotherMockComponent);
+            registry.register(name2, AnotherMockComponent as unknown as StaticUIComponent);
 
             const styles = registry.getAllStyles();
 
@@ -220,7 +219,7 @@ describe('ComponentRegistry', () => {
         it('should handle components that throw errors gracefully', () => {
             const name = `ErrorComponent_${Date.now()}`;
 
-            class ErrorComponent implements StaticUIComponent {
+            class ErrorComponent {
                 static render(): string {
                     return '<div>Error</div>';
                 }
@@ -230,7 +229,7 @@ describe('ComponentRegistry', () => {
                 }
             }
 
-            registry.register(name, ErrorComponent);
+            registry.register(name, ErrorComponent as unknown as StaticUIComponent);
 
             // Should not throw, just skip the erroring component
             expect(() => registry.getAllStyles()).not.toThrow();
@@ -242,7 +241,7 @@ describe('ComponentRegistry', () => {
         it('should filter out empty styles', () => {
             const name = `EmptyStyles_${Date.now()}`;
 
-            class EmptyStylesComponent implements StaticUIComponent {
+            class EmptyStylesComponent {
                 static render(): string {
                     return '<div>Empty</div>';
                 }
@@ -252,7 +251,7 @@ describe('ComponentRegistry', () => {
                 }
             }
 
-            registry.register(name, EmptyStylesComponent);
+            registry.register(name, EmptyStylesComponent as unknown as StaticUIComponent);
 
             const styles = registry.getAllStyles();
             // Should still be a valid string, just may be empty or contain other components' styles
@@ -264,7 +263,7 @@ describe('ComponentRegistry', () => {
             const name2 = `Join2_${Date.now()}`;
 
             registry.register(name1, MockComponent);
-            registry.register(name2, AnotherMockComponent);
+            registry.register(name2, AnotherMockComponent as unknown as StaticUIComponent);
 
             const styles = registry.getAllStyles();
 
@@ -278,7 +277,7 @@ describe('ComponentRegistry', () => {
             const beforeCount = registry.count;
 
             const name = `Count_${Date.now()}`;
-            registry.register(name, MockComponent);
+            registry.register(name, MockComponent as unknown as StaticUIComponent);
 
             const afterCount = registry.count;
 
@@ -288,7 +287,7 @@ describe('ComponentRegistry', () => {
         it('should not increase count when re-registering', () => {
             const name = `CountReregister_${Date.now()}`;
 
-            registry.register(name, MockComponent);
+            registry.register(name, MockComponent as unknown as StaticUIComponent);
             const count1 = registry.count;
 
             registry.register(name, AnotherMockComponent);
@@ -313,7 +312,7 @@ describe('ComponentRegistry', () => {
 
         it('should support getting styles for specific components', () => {
             const name = `Specific_${Date.now()}`;
-            registry.register(name, MockComponent);
+            registry.register(name, MockComponent as unknown as StaticUIComponent);
 
             const component = registry.get(name);
             expect(component).toBeDefined();
@@ -371,7 +370,7 @@ describe('ComponentRegistry', () => {
             ];
 
             names.forEach(name => {
-                registry.register(name, MockComponent);
+                registry.register(name, MockComponent as unknown as StaticUIComponent);
                 expect(registry.has(name)).toBe(true);
             });
         });
@@ -379,7 +378,7 @@ describe('ComponentRegistry', () => {
         it('should handle component with very long styles', () => {
             const name = `LongStyles_${Date.now()}`;
 
-            class LongStylesComponent implements StaticUIComponent {
+            class LongStylesComponent {
                 static render(): string {
                     return '<div>Long</div>';
                 }
@@ -389,7 +388,7 @@ describe('ComponentRegistry', () => {
                 }
             }
 
-            registry.register(name, LongStylesComponent);
+            registry.register(name, LongStylesComponent as unknown as StaticUIComponent);
 
             const styles = registry.getAllStyles();
             expect(styles.length).toBeGreaterThan(1000);
@@ -398,7 +397,7 @@ describe('ComponentRegistry', () => {
         it('should handle component with no styles', () => {
             const name = `NoStyles_${Date.now()}`;
 
-            class NoStylesComponent implements StaticUIComponent {
+            class NoStylesComponent {
                 static render(): string {
                     return '<div>No styles</div>';
                 }
@@ -408,7 +407,7 @@ describe('ComponentRegistry', () => {
                 }
             }
 
-            registry.register(name, NoStylesComponent);
+            registry.register(name, NoStylesComponent as unknown as StaticUIComponent);
 
             expect(() => registry.getAllStyles()).not.toThrow();
         });
