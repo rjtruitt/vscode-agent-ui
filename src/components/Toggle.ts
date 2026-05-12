@@ -1,4 +1,6 @@
 import { escapeHtml } from '../utils/html';
+import { ValidationError } from '../utils/errors';
+
 /**
  * Toggle Component
  *
@@ -119,8 +121,27 @@ export interface ToggleProps {
 export class Toggle {
     /**
      * Render a toggle to HTML string
+     *
+     * @throws {ValidationError} If props are invalid
      */
     static render(props: ToggleProps): string {
+        // Validate required label
+        if (!props.label || typeof props.label !== 'string' || props.label.trim() === '') {
+            throw new ValidationError('Toggle label is required and must be a non-empty string', {
+                field: 'label',
+                received: props.label,
+            });
+        }
+
+        // Validate required checked state
+        if (typeof props.checked !== 'boolean') {
+            throw new ValidationError('Toggle checked state is required and must be a boolean', {
+                field: 'checked',
+                received: props.checked,
+                expected: 'boolean',
+            });
+        }
+
         const {
             label,
             checked,
@@ -132,6 +153,16 @@ export class Toggle {
             name,
             id = `toggle-${Math.random().toString(36).substr(2, 9)}`
         } = props;
+
+        // Validate size
+        const validSizes: ToggleSize[] = ['small', 'medium', 'large'];
+        if (!validSizes.includes(size)) {
+            throw new ValidationError('Invalid toggle size', {
+                field: 'size',
+                expected: validSizes.join(' | '),
+                received: size,
+            });
+        }
 
         // Build wrapper classes
         const wrapperClasses = [
