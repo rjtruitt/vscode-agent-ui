@@ -94,6 +94,9 @@
  * Inputs are lightweight. For real-time validation, debounce input handlers.
  */
 
+import { escapeHtml } from '../utils/html';
+import { ValidationError } from '../utils/errors';
+
 export type InputType = 'text' | 'textarea' | 'number' | 'password' | 'email' | 'search' | 'url' | 'tel';
 
 /**
@@ -175,8 +178,77 @@ export class Input {
      * Render an input to HTML string
      */
     static render(props: InputProps): string {
+        // Validate required fields
+        if (props.label !== undefined && typeof props.label !== 'string') {
+            throw new ValidationError(
+                'INVALID_LABEL',
+                'label',
+                'Input label must be a string',
+                { received: typeof props.label }
+            );
+        }
+
+        // Validate value type
+        if (props.value !== undefined && typeof props.value !== 'string') {
+            throw new ValidationError(
+                'INVALID_VALUE',
+                'value',
+                'Input value must be a string',
+                { received: typeof props.value }
+            );
+        }
+
+        // Validate type
+        const validTypes: InputType[] = ['text', 'textarea', 'number', 'password', 'email', 'search', 'url', 'tel'];
+        const type = props.type || 'text';
+        if (!validTypes.includes(type)) {
+            throw new ValidationError(
+                'INVALID_TYPE',
+                'type',
+                `Input type must be one of: ${validTypes.join(', ')}`,
+                { received: type, valid: validTypes }
+            );
+        }
+
+        // Validate numeric constraints for number inputs
+        if (type === 'number') {
+            if (props.min !== undefined && typeof props.min !== 'number') {
+                throw new ValidationError(
+                    'INVALID_MIN',
+                    'min',
+                    'Input min must be a number',
+                    { received: typeof props.min }
+                );
+            }
+            if (props.max !== undefined && typeof props.max !== 'number') {
+                throw new ValidationError(
+                    'INVALID_MAX',
+                    'max',
+                    'Input max must be a number',
+                    { received: typeof props.max }
+                );
+            }
+            if (props.step !== undefined && typeof props.step !== 'number') {
+                throw new ValidationError(
+                    'INVALID_STEP',
+                    'step',
+                    'Input step must be a number',
+                    { received: typeof props.step }
+                );
+            }
+        }
+
+        // Validate textarea-specific props
+        if (type === 'textarea' && props.rows !== undefined && (typeof props.rows !== 'number' || props.rows < 1)) {
+            throw new ValidationError(
+                'INVALID_ROWS',
+                'rows',
+                'Textarea rows must be a positive number',
+                { received: props.rows }
+            );
+        }
+
         const {
-            type = 'text',
             label,
             value = '',
             placeholder,
@@ -218,9 +290,9 @@ export class Input {
 
         // Build input attributes
         const attrs = [
-            name && `name="${Input.escapeHtml(name)}"`,
+            name && `name="${escapeHtml(name)}"`,
             `id="${id}"`,
-            placeholder && `placeholder="${Input.escapeHtml(placeholder)}"`,
+            placeholder && `placeholder="${escapeHtml(placeholder)}"`,
             disabled && 'disabled',
             required && 'required',
             readonly && 'readonly',
@@ -238,14 +310,14 @@ export class Input {
 
         // Render input element
         const inputElement = type === 'textarea'
-            ? `<textarea class="${inputClasses}" rows="${rows}" ${attrs}>${Input.escapeHtml(value)}</textarea>`
-            : `<input type="${type}" class="${inputClasses}" value="${Input.escapeHtml(value)}" ${attrs}>`;
+            ? `<textarea class="${inputClasses}" rows="${rows}" ${attrs}>${escapeHtml(value)}</textarea>`
+            : `<input type="${type}" class="${inputClasses}" value="${escapeHtml(value)}" ${attrs}>`;
 
         return `
             <div class="${wrapperClasses}">
                 ${label ? `
                     <label for="${id}" class="input-label">
-                        ${Input.escapeHtml(label)}
+                        ${escapeHtml(label)}
                         ${required ? '<span class="required-mark">*</span>' : ''}
                     </label>
                 ` : ''}
@@ -255,12 +327,12 @@ export class Input {
                 </div>
                 ${description && !error ? `
                     <div id="${id}-desc" class="input-description">
-                        ${Input.escapeHtml(description)}
+                        ${escapeHtml(description)}
                     </div>
                 ` : ''}
                 ${error ? `
                     <div id="${id}-desc" class="input-error" role="alert">
-                        ${Input.escapeHtml(error)}
+                        ${escapeHtml(error)}
                     </div>
                 ` : ''}
             </div>
@@ -381,15 +453,4 @@ export class Input {
         `;
     }
 
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
 }
