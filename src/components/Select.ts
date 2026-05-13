@@ -91,6 +91,9 @@
  * - Optgroup for grouped options
  */
 
+import { escapeHtml } from '../utils/html';
+import { ValidationError } from '../utils/errors';
+
 export interface SelectOption {
     /** Option value */
     value: string;
@@ -162,6 +165,76 @@ export class Select {
      * Render a select to HTML string
      */
     static render(props: SelectProps): string {
+        // Validate options array
+        if (!Array.isArray(props.options)) {
+            throw new ValidationError(
+                'INVALID_OPTIONS',
+                'options',
+                'Select options must be an array',
+                { received: typeof props.options }
+            );
+        }
+
+        if (props.options.length === 0) {
+            throw new ValidationError(
+                'EMPTY_OPTIONS',
+                'options',
+                'Select must have at least one option',
+                { received: props.options.length }
+            );
+        }
+
+        // Validate each option
+        props.options.forEach((opt, index) => {
+            if ('group' in opt) {
+                // Option group
+                const group = opt as SelectOptionGroup;
+                if (typeof group.group !== 'string' || group.group.trim().length === 0) {
+                    throw new ValidationError(
+                        'INVALID_GROUP_NAME',
+                        `options[${index}].group`,
+                        'Option group name must be a non-empty string',
+                        { index, received: group.group }
+                    );
+                }
+                if (!Array.isArray(group.items) || group.items.length === 0) {
+                    throw new ValidationError(
+                        'EMPTY_GROUP',
+                        `options[${index}].items`,
+                        'Option group must have at least one item',
+                        { index, group: group.group }
+                    );
+                }
+                // Validate items in group
+                group.items.forEach((item, itemIndex) => {
+                    Select.validateOption(item, `options[${index}].items[${itemIndex}]`);
+                });
+            } else {
+                // Single option
+                Select.validateOption(opt as SelectOption, `options[${index}]`);
+            }
+        });
+
+        // Validate label
+        if (props.label !== undefined && typeof props.label !== 'string') {
+            throw new ValidationError(
+                'INVALID_LABEL',
+                'label',
+                'Select label must be a string',
+                { received: typeof props.label }
+            );
+        }
+
+        // Validate value
+        if (props.value !== undefined && typeof props.value !== 'string') {
+            throw new ValidationError(
+                'INVALID_VALUE',
+                'value',
+                'Select value must be a string',
+                { received: typeof props.value }
+            );
+        }
+
         const {
             label,
             value,
@@ -187,7 +260,7 @@ export class Select {
 
         // Build select attributes
         const attrs = [
-            name && `name="${Select.escapeHtml(name)}"`,
+            name && `name="${escapeHtml(name)}"`,
             `id="${id}"`,
             disabled && 'disabled',
             required && 'required',
@@ -210,29 +283,52 @@ export class Select {
             <div class="${wrapperClasses}">
                 ${label ? `
                     <label for="${id}" class="select-label">
-                        ${Select.escapeHtml(label)}
+                        ${escapeHtml(label)}
                         ${required ? '<span class="required-mark">*</span>' : ''}
                     </label>
                 ` : ''}
                 <div class="select-container">
                     <select class="vscode-select" ${attrs}>
-                        ${placeholder ? `<option value="" disabled ${!value ? 'selected' : ''}>${Select.escapeHtml(placeholder)}</option>` : ''}
+                        ${placeholder ? `<option value="" disabled ${!value ? 'selected' : ''}>${escapeHtml(placeholder)}</option>` : ''}
                         ${optionsHtml}
                     </select>
                     <span class="select-arrow">▼</span>
                 </div>
                 ${description && !error ? `
                     <div id="${id}-desc" class="select-description">
-                        ${Select.escapeHtml(description)}
+                        ${escapeHtml(description)}
                     </div>
                 ` : ''}
                 ${error ? `
                     <div id="${id}-desc" class="select-error" role="alert">
-                        ${Select.escapeHtml(error)}
+                        ${escapeHtml(error)}
                     </div>
                 ` : ''}
             </div>
         `;
+    }
+
+    /**
+     * Validate a single option
+     */
+    private static validateOption(option: SelectOption, fieldPath: string): void {
+        if (typeof option.value !== 'string') {
+            throw new ValidationError(
+                'INVALID_OPTION_VALUE',
+                `${fieldPath}.value`,
+                'Option value must be a string',
+                { received: typeof option.value, fieldPath }
+            );
+        }
+
+        if (typeof option.label !== 'string' || option.label.trim().length === 0) {
+            throw new ValidationError(
+                'INVALID_OPTION_LABEL',
+                `${fieldPath}.label`,
+                'Option label must be a non-empty string',
+                { received: option.label, fieldPath }
+            );
+        }
     }
 
     /**
@@ -243,7 +339,7 @@ export class Select {
         const disabled = option.disabled ? 'disabled' : '';
         const label = option.icon ? `${option.icon} ${option.label}` : option.label;
 
-        return `<option value="${Select.escapeHtml(option.value)}" ${selected} ${disabled}>${Select.escapeHtml(label)}</option>`;
+        return `<option value="${escapeHtml(option.value)}" ${selected} ${disabled}>${escapeHtml(label)}</option>`;
     }
 
     /**
@@ -252,7 +348,7 @@ export class Select {
     private static renderOptGroup(group: SelectOptionGroup, selectedValue?: string): string {
         const optionsHtml = group.items.map(opt => Select.renderOption(opt, selectedValue)).join('');
         return `
-            <optgroup label="${Select.escapeHtml(group.group)}">
+            <optgroup label="${escapeHtml(group.group)}">
                 ${optionsHtml}
             </optgroup>
         `;
@@ -363,15 +459,4 @@ export class Select {
         `;
     }
 
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    private static escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
 }
